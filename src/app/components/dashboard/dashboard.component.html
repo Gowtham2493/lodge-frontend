@@ -1,47 +1,187 @@
-<h4 class="fw-bold mb-3"><i class="bi bi-grid me-2"></i>Room Dashboard</h4>
+<!-- Dashboard Container -->
+<div class="dashboard-container">
 
-<div class="row g-3 mb-4">
-  <div class="col-4">
-    <div class="stats-card bg-white text-center">
-      <div class="stats-number text-primary">{{ rooms.length }}</div>
-      <div class="stats-label">Total Rooms</div>
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="stats-card bg-white text-center">
-      <div class="stats-number text-success">{{ availableCount }}</div>
-      <div class="stats-label">Available</div>
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="stats-card bg-white text-center">
-      <div class="stats-number text-danger">{{ occupiedCount }}</div>
-      <div class="stats-label">Occupied</div>
-    </div>
-  </div>
-</div>
+  <!-- Top Section: Stats Cards + Room Chart -->
+  <div class="top-section">
+    <!-- Stats Cards Column -->
+    <div class="stats-column">
+      <!-- Total Rooms Card -->
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-header">Total rooms</div>
+          <div class="stat-value">
+            <span class="value-number">{{ totalRooms }}</span>
+            <button class="info-btn">
+              <i class="bi bi-info-circle"></i>
+            </button>
+          </div>
+          <div class="stat-trend positive">
+            <i class="bi bi-arrow-up"></i>
+            <span class="trend-value">{{ totalRoomsTrend }}%</span>
+            <span class="trend-label">vs last month</span>
+          </div>
+        </div>
+        <div class="stat-chart">
+          <div class="mini-chart purple"></div>
+        </div>
+      </div>
 
-<div class="row g-3">
-  @for (room of rooms; track room.roomId) {
-    <div class="col-6 col-md-4 col-lg-3">
-      <div class="card room-card" [class.available]="room.status === 'AVAILABLE'" [class.occupied]="room.status === 'OCCUPIED'">
-        <div class="card-body text-center py-3">
-          <h5 class="card-title mb-1 fw-bold">{{ room.roomNumber }}</h5>
-          <p class="card-text mb-1">
-            <i class="bi bi-people me-1"></i>Capacity: {{ room.capacity }}
-          </p>
-          <span class="badge" [class.bg-success]="room.status === 'AVAILABLE'" [class.bg-danger]="room.status === 'OCCUPIED'">
-            {{ room.status }}
-          </span>
+      <!-- Repeat Guests Card -->
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-header">Repeat guests</div>
+          <div class="stat-value">
+            <span class="value-number">{{ repeatGuests }}</span>
+            <button class="info-btn">
+              <i class="bi bi-info-circle"></i>
+            </button>
+          </div>
+          <div class="stat-trend negative">
+            <i class="bi bi-arrow-down"></i>
+            <span class="trend-value">22%</span>
+            <span class="trend-label">vs last month</span>
+          </div>
+        </div>
+        <div class="stat-chart">
+          <div class="mini-chart purple"></div>
+        </div>
+      </div>
+
+      <!-- Available Rooms Card -->
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-header">Available rooms</div>
+          <div class="stat-value">
+            <span class="value-number">{{ availableRooms }}</span>
+            <button class="info-btn">
+              <i class="bi bi-info-circle"></i>
+            </button>
+          </div>
+          <div class="stat-trend positive">
+            <i class="bi bi-arrow-up"></i>
+            <span class="trend-value">{{ availableRoomsTrend }}%</span>
+            <span class="trend-label">vs last month</span>
+          </div>
+        </div>
+        <div class="stat-chart">
+          <div class="mini-chart purple"></div>
+        </div>
+      </div>
+
+      <!-- Occupied Card -->
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-header">Occupied</div>
+          <div class="stat-value">
+            <span class="value-number">{{ occupiedRooms }}</span>
+            <button class="info-btn">
+              <i class="bi bi-info-circle"></i>
+            </button>
+          </div>
+          <div class="stat-trend negative">
+            <i class="bi bi-arrow-down"></i>
+            <span class="trend-value">{{ occupiedRoomsTrend }}%</span>
+            <span class="trend-label">vs last month</span>
+          </div>
+        </div>
+        <div class="stat-chart">
+          <div class="mini-chart purple"></div>
         </div>
       </div>
     </div>
-  }
-</div>
 
-@if (rooms.length === 0) {
-  <div class="text-center text-muted py-5">
-    <i class="bi bi-hourglass-split" style="font-size: 2rem;"></i>
-    <p class="mt-2">Loading rooms...</p>
+    <!-- Room Type Chart Card -->
+    <div class="room-chart-card">
+      <h3 class="chart-title">Room</h3>
+      <div class="chart-container">
+        <div class="chart-wrapper">
+          <svg viewBox="0 0 200 200" class="radar-chart">
+            <!-- Pentagon background -->
+            <polygon points="100,30 162,70 145,130 55,130 38,70" class="chart-bg" />
+            <!-- Data polygon -->
+            <polygon points="100,45 150,75 138,115 62,115 50,75" class="chart-data" />
+            <!-- Grid lines -->
+            <line x1="100" y1="100" x2="100" y2="30" class="grid-line" />
+            <line x1="100" y1="100" x2="162" y2="70" class="grid-line" />
+            <line x1="100" y1="100" x2="145" y2="130" class="grid-line" />
+            <line x1="100" y1="100" x2="55" y2="130" class="grid-line" />
+            <line x1="100" y1="100" x2="38" y2="70" class="grid-line" />
+          </svg>
+          <div class="chart-labels">
+            <div class="label label-top">STANDARD</div>
+            <div class="label label-right">FAMILY</div>
+            <div class="label label-bottom-right">DELUXE</div>
+            <div class="label label-bottom-left">SUITE</div>
+            <div class="label label-left">PRESIDENTIAL</div>
+          </div>
+        </div>
+        <div class="room-stats">
+          <div class="room-stat-item">
+            <span class="stat-label">Standard :</span>
+            <span class="stat-percent">80%</span>
+          </div>
+          <div class="room-stat-item">
+            <span class="stat-label">Family :</span>
+            <span class="stat-percent">40%</span>
+          </div>
+          <div class="room-stat-item">
+            <span class="stat-label">Deluxe :</span>
+            <span class="stat-percent">65%</span>
+          </div>
+          <div class="room-stat-item">
+            <span class="stat-label">Suite :</span>
+            <span class="stat-percent">90%</span>
+          </div>
+          <div class="room-stat-item">
+            <span class="stat-label">Presidential :</span>
+            <span class="stat-percent">72%</span>
+          </div>
+          <div class="room-stat-item">
+            <span class="stat-label">Superior :</span>
+            <span class="stat-percent">84%</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-}
+
+  <!-- Room Status Section -->
+  <div class="room-status-section">
+    <h2 class="section-title">Room Status</h2>
+
+    <!-- Room Status Grid -->
+    <div class="room-status-grid">
+      <div *ngFor="let room of rooms"
+           class="room-card"
+           [ngClass]="getRoomCardClass(room)">
+        <div class="room-number">{{ room.roomNumber }}</div>
+        <ng-container *ngIf="room.booking">
+          <div class="room-date">{{ formatDate(room.booking.checkInDate) }} - {{ formatDate(room.booking.checkOutDate) }}</div>
+          <div class="room-guest">{{ room.booking.guestName }}</div>
+        </ng-container>
+        <ng-container *ngIf="!room.booking && room.status === 'AVAILABLE'">
+          <button class="user-icon-single">
+            <i class="bi bi-person-plus"></i>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item">
+        <span class="legend-dot available"></span>
+        <span class="legend-label">Available room</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot booked"></span>
+        <span class="legend-label">Booked</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot cleaning"></span>
+        <span class="legend-label">Need cleaning</span>
+      </div>
+    </div>
+  </div>
+
+</div>

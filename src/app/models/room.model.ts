@@ -4,4 +4,9 @@ export interface Room {
   capacity: number;
   pricePerNight: number;
   status: string;
+  booking?: {
+    guestName: string;
+    checkInDate: string;
+    checkOutDate: string;
+  };
 }
