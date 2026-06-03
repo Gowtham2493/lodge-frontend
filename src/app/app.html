@@ -18,14 +18,16 @@
   <app-sidenav
     [navItems]="sidenavItems"
     [isMobileOpen]="isSidenavOpen"
+    [isCollapsed]="isSidenavCollapsed"
     (navItemClicked)="onSideNavItemClick($event)"
+    (toggleCollapse)="toggleSidenavCollapse()"
   ></app-sidenav>
 
   @if (isSidenavOpen) {
     <div class="sidenav-overlay" (click)="toggleSidenav()"></div>
   }
 
-  <div class="main-content">
+  <div class="main-content" [class.sidenav-collapsed]="isSidenavCollapsed">
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
       @for (notification of notifications; track $index) {
         <div class="alert alert-{{ notification.type === 'error' ? 'danger' : notification.type }} alert-dismissible fade show" role="alert">
@@ -34,7 +36,7 @@
       }
     </div>
 
-    <div class="container-fluid mt-3 px-3 px-md-4">
+    <div class="container-fluid p-3 p-md-4">
       <router-outlet></router-outlet>
     </div>
   </div>

@@ -6,6 +6,8 @@
           href="#"
           (click)="onNavClick(item, $event)"
           class="sidenav__link"
+          [class.sidenav__link--active]="isActive(item)"
+          [title]="isCollapsed() ? item.label : ''"
         >
           <i *ngIf="item.icon" [class]="'bi ' + item.icon + ' sidenav__icon'"></i>
           <span class="sidenav__label">{{ item.label }}</span>
@@ -13,4 +15,9 @@
       </li>
     </ul>
   </nav>
+
+  <!-- Collapse Toggle Button at Bottom -->
+  <button class="sidenav__toggle" (click)="onToggleCollapse()" [attr.aria-label]="isCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+    <i [class]="isCollapsed() ? 'bi bi-chevron-right' : 'bi bi-chevron-left'"></i>
+  </button>
 </aside>

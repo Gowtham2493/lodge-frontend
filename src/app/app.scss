@@ -3,13 +3,24 @@
 }
 
 .main-content {
-  margin-left: 260px; // Width of sidenav
-  padding-top: 64px; // Height of header
-  min-height: 100vh;
-  transition: margin-left 0.3s ease;
+  position: fixed;
+  top: 64px; // Height of header
+  left: 260px; // Width of sidenav
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  transition: left 0.3s ease;
+
+  &.sidenav-collapsed {
+    left: 70px;
+  }
 
   @media (max-width: 768px) {
-    margin-left: 0;
+    left: 0;
+
+    &.sidenav-collapsed {
+      left: 0;
+    }
   }
 }
 

@@ -15,23 +15,74 @@
   z-index: 900;
   overflow-y: auto;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 
   &--collapsed {
     width: 70px;
 
+    .sidenav__toggle {
+      margin-left: 1.2rem;
+      margin-right: 1.2rem;
+    }
+
     .sidenav__label {
       opacity: 0;
       width: 0;
+      display: none;
     }
 
     .sidenav__link {
       justify-content: center;
       padding: 0.875rem 0;
     }
+
+    .sidenav__item {
+      margin: 0.25rem 0.5rem;
+    }
   }
 
   &__nav {
-    padding: 1rem 0;
+    padding: 0.5rem 0 1rem 0;
+    flex: 1;
+  }
+
+  &__toggle {
+    position: sticky;
+    bottom: 0;
+    width: 32px;
+    height: 32px;
+    margin: 0.5rem 0.75rem 1rem auto;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+    color: #64748b;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: #e2e8f0;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    i {
+      font-size: 1rem;
+      transition: transform 0.2s ease;
+    }
+
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 
   &__list {
@@ -56,24 +107,56 @@
     border-radius: 0.5rem;
     transition: all 0.2s ease;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 
     &:hover {
       background-color: #f1f5f9;
       color: #0f172a;
     }
 
-    &.active {
+    &--active {
       background-color: #3b82f6;
       color: #ffffff;
+      font-weight: 600;
 
       .sidenav__icon {
+        color: #ffffff;
+      }
+
+      &:hover {
+        background-color: #2563eb;
         color: #ffffff;
       }
     }
 
     &:active {
       transform: scale(0.98);
+    }
+
+    // Tooltip for collapsed state
+    .sidenav--collapsed & {
+      &::after {
+        content: attr(title);
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-left: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        background-color: #1e293b;
+        color: white;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        border-radius: 0.375rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        z-index: 1000;
+      }
+
+      &:hover::after {
+        opacity: 1;
+      }
     }
   }
 

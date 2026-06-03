@@ -19,6 +19,7 @@ export class App implements OnInit {
   navItems: NavItem[] = [];
   sidenavItems: SideNavItem[] = [];
   isSidenavOpen = false;
+  isSidenavCollapsed = false;
   profileMenuItems: ProfileMenuItem[] = [
     { label: 'Logout', action: 'logout', icon: 'bi-box-arrow-right' }
   ];
@@ -84,6 +85,10 @@ export class App implements OnInit {
 
   toggleSidenav(): void {
     this.isSidenavOpen = !this.isSidenavOpen;
+  }
+
+  toggleSidenavCollapse(): void {
+    this.isSidenavCollapsed = !this.isSidenavCollapsed;
   }
 
   onProfileMenuItemClick(item: ProfileMenuItem): void {
