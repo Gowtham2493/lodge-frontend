@@ -9,75 +9,8 @@ import { Room } from '../../models/room.model';
   selector: 'app-room-management',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  template: `
-    <h4 class="fw-bold mb-3"><i class="bi bi-door-open me-2"></i>Room Management</h4>
-
-    <div class="form-section">
-      <h5 class="mb-3 text-primary">{{ editingRoom ? 'Edit Room' : 'Add New Room' }}</h5>
-      <div class="row g-3" [formGroup]="roomForm">
-        <div class="col-md-4">
-          <label class="form-label">Room Number *</label>
-          <input type="text" class="form-control" formControlName="roomNumber" placeholder="e.g. 201">
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Capacity *</label>
-          <input type="number" class="form-control" formControlName="capacity" min="1" placeholder="Max people">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Price/Night (&#8377;)</label>
-          <input type="number" class="form-control" formControlName="pricePerNight" min="0" placeholder="e.g. 1500">
-        </div>
-        <div class="col-md-2 d-flex align-items-end gap-2">
-          <button type="button" class="btn btn-primary" (click)="onSaveRoom()" [disabled]="roomForm.invalid">
-            <i class="bi bi-check me-1"></i>{{ editingRoom ? 'Update' : 'Add Room' }}
-          </button>
-          @if (editingRoom) {
-            <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()">Cancel</button>
-          }
-        </div>
-      </div>
-    </div>
-
-    <div class="table-responsive bg-white shadow-sm rounded">
-      <table class="table table-hover mb-0">
-        <thead class="table-light">
-          <tr>
-            <th>Room Number</th>
-            <th>Capacity</th>
-            <th>Price/Night</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (room of rooms; track room.roomId) {
-            <tr>
-              <td class="fw-bold">{{ room.roomNumber }}</td>
-              <td>{{ room.capacity }} persons</td>
-              <td>{{ room.pricePerNight ? '₹' + room.pricePerNight : '-' }}</td>
-              <td>
-                <span class="badge" [class.bg-success]="room.status === 'AVAILABLE'" [class.bg-danger]="room.status === 'OCCUPIED'">
-                  {{ room.status }}
-                </span>
-              </td>
-              <td>
-                <button class="btn btn-sm btn-outline-primary me-1" (click)="onEdit(room)">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" (click)="onDelete(room)" [disabled]="room.status === 'OCCUPIED'">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="4" class="text-center text-muted py-4">No rooms found</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  `
+  templateUrl: './room-management.component.html',
+  styleUrl: './room-management.component.scss'
 })
 export class RoomManagementComponent implements OnInit {
   rooms: Room[] = [];
