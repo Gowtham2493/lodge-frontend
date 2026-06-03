@@ -18,6 +18,7 @@ export class App implements OnInit {
   notifications: Notification[] = [];
   navItems: NavItem[] = [];
   sidenavItems: SideNavItem[] = [];
+  isSidenavOpen = false;
   profileMenuItems: ProfileMenuItem[] = [
     { label: 'Logout', action: 'logout', icon: 'bi-box-arrow-right' }
   ];
@@ -75,9 +76,14 @@ export class App implements OnInit {
   onSideNavItemClick(item: SideNavItem): void {
     if (item.link) {
       this.router.navigate([item.link]);
+      this.isSidenavOpen = false; // Close sidenav on mobile after navigation
     } else if (item.action) {
       // Handle action if needed
     }
+  }
+
+  toggleSidenav(): void {
+    this.isSidenavOpen = !this.isSidenavOpen;
   }
 
   onProfileMenuItemClick(item: ProfileMenuItem): void {

@@ -1,4 +1,4 @@
-<aside class="sidenav" [class.sidenav--collapsed]="isCollapsed()">
+<aside class="sidenav" [class.sidenav--collapsed]="isCollapsed()" [class.sidenav--mobile-open]="isMobileOpen()">
   <nav class="sidenav__nav">
     <ul class="sidenav__list">
       <li *ngFor="let item of navItems()" class="sidenav__item">

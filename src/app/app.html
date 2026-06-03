@@ -9,12 +9,21 @@
     [profileMenuItems]="profileMenuItems"
     (navItemClicked)="onNavItemClick($event)"
     (profileMenuItemClicked)="onProfileMenuItemClick($event)"
-  ></app-header>
+  >
+    <button class="mobile-menu-btn" (click)="toggleSidenav()" aria-label="Toggle menu">
+      <i class="bi bi-list"></i>
+    </button>
+  </app-header>
 
   <app-sidenav
     [navItems]="sidenavItems"
+    [isMobileOpen]="isSidenavOpen"
     (navItemClicked)="onSideNavItemClick($event)"
   ></app-sidenav>
+
+  @if (isSidenavOpen) {
+    <div class="sidenav-overlay" (click)="toggleSidenav()"></div>
+  }
 
   <div class="main-content">
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">

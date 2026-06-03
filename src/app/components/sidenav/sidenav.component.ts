@@ -23,6 +23,9 @@ export class SidenavComponent {
   /** Whether the sidebar is collapsed */
   isCollapsed = input<boolean>(false);
 
+  /** Whether the mobile menu is open */
+  isMobileOpen = input<boolean>(false);
+
   /** Emitted when a navigation item is clicked */
   navItemClicked = output<SideNavItem>();
 

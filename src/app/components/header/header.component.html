@@ -4,6 +4,9 @@
 >
   <div class="nr-header__container">
 
+    <!-- Mobile Menu Toggle (projected from parent) -->
+    <ng-content select=".mobile-menu-btn"></ng-content>
+
     <!-- Left Section: Brand -->
     <div class="nr-header__brand">
       <img *ngIf="logoSrc()" [src]="logoSrc()" alt="Logo" class="nr-header__logo" />
