@@ -10,20 +10,33 @@
     (navItemClicked)="onNavItemClick($event)"
     (profileMenuItemClicked)="onProfileMenuItemClick($event)"
   ></app-header>
-}
 
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-  @for (notification of notifications; track $index) {
-    <div class="alert alert-{{ notification.type === 'error' ? 'danger' : notification.type }} alert-dismissible fade show" role="alert">
-      {{ notification.message }}
+  <app-sidenav
+    [navItems]="sidenavItems"
+    (navItemClicked)="onSideNavItemClick($event)"
+  ></app-sidenav>
+
+  <div class="main-content">
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+      @for (notification of notifications; track $index) {
+        <div class="alert alert-{{ notification.type === 'error' ? 'danger' : notification.type }} alert-dismissible fade show" role="alert">
+          {{ notification.message }}
+        </div>
+      }
     </div>
-  }
-</div>
 
-<div class="container-fluid mt-3 px-3 px-md-4">
-  <router-outlet></router-outlet>
-</div>
+    <div class="container-fluid mt-3 px-3 px-md-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+} @else {
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    @for (notification of notifications; track $index) {
+      <div class="alert alert-{{ notification.type === 'error' ? 'danger' : notification.type }} alert-dismissible fade show" role="alert">
+        {{ notification.message }}
+      </div>
+    }
+  </div>
 
-<div class="container-fluid mt-3 px-3 px-md-4">
   <router-outlet></router-outlet>
-</div>
+}

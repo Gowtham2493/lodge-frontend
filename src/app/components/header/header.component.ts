@@ -49,8 +49,9 @@ export class HeaderComponent  {
 
   /** Menu items to show in the dropdown when profile is clicked */
   profileMenuItems = input<ProfileMenuItem[]>([]);
-  
+
   isProfileMenuOpen = signal(false);
+  isMobileMenuOpen = signal(false);
   private elementRef = inject(ElementRef);
 
   // Styling & Behavior
@@ -90,6 +91,10 @@ export class HeaderComponent  {
   toggleProfileMenu(event: Event) {
     event.stopPropagation();
     this.isProfileMenuOpen.update(v => !v);
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen.update(v => !v);
   }
 
   @HostListener('document:click', ['$event'])

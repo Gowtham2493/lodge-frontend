@@ -1,3 +1,14 @@
 :host {
   display: block;
 }
+
+.main-content {
+  margin-left: 260px; // Width of sidenav
+  padding-top: 64px; // Height of header
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
+}

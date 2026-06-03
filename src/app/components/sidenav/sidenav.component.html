@@ -1,0 +1,16 @@
+<aside class="sidenav" [class.sidenav--collapsed]="isCollapsed()">
+  <nav class="sidenav__nav">
+    <ul class="sidenav__list">
+      <li *ngFor="let item of navItems()" class="sidenav__item">
+        <a
+          href="#"
+          (click)="onNavClick(item, $event)"
+          class="sidenav__link"
+        >
+          <i *ngIf="item.icon" [class]="'bi ' + item.icon + ' sidenav__icon'"></i>
+          <span class="sidenav__label">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>
