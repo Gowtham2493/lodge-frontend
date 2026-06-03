@@ -48,12 +48,20 @@
       </div>
 
       <!-- Available Rooms Card -->
-      <div class="stat-card" (click)="navigateToNewBooking()" style="cursor: pointer;">
+      <div
+        class="stat-card clickable-card"
+        (click)="navigateToNewBooking()"
+        (keydown.enter)="navigateToNewBooking()"
+        (keydown.space)="navigateToNewBooking()"
+        tabindex="0"
+        role="button"
+        aria-label="Create a new booking"
+      >
         <div class="stat-content">
           <div class="stat-header">Available rooms</div>
           <div class="stat-value">
             <span class="value-number">{{ availableRooms }}</span>
-            <button class="info-btn">
+            <button class="info-btn" (click)="$event.stopPropagation()" type="button">
               <i class="bi bi-info-circle"></i>
             </button>
           </div>
@@ -160,7 +168,12 @@
           <div class="room-guest">{{ room.booking.guestName }}</div>
         </ng-container>
         <ng-container *ngIf="!room.booking && room.status === 'AVAILABLE'">
-          <button class="user-icon-single">
+          <button
+            class="user-icon-single"
+            type="button"
+            (click)="navigateToNewBooking()"
+            [attr.aria-label]="'Create booking for room ' + room.roomNumber"
+          >
             <i class="bi bi-person-plus"></i>
           </button>
         </ng-container>
