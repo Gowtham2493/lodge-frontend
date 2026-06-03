@@ -1,4 +1,16 @@
-<app-navbar></app-navbar>
+@if (authService.isLoggedIn()) {
+  <app-header
+    [logoSrc]="'favicon.ico'"
+    [title]="'Royal Guest House ( Manager )'"
+    [variant]="'primary'"
+    [navItems]="navItems"
+    [showProfile]="true"
+    [profileName]="authService.getUsername() + ' (' + authService.getRole() + ')'"
+    [profileMenuItems]="profileMenuItems"
+    (navItemClicked)="onNavItemClick($event)"
+    (profileMenuItemClicked)="onProfileMenuItemClick($event)"
+  ></app-header>
+}
 
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
   @for (notification of notifications; track $index) {
@@ -6,6 +18,10 @@
       {{ notification.message }}
     </div>
   }
+</div>
+
+<div class="container-fluid mt-3 px-3 px-md-4">
+  <router-outlet></router-outlet>
 </div>
 
 <div class="container-fluid mt-3 px-3 px-md-4">

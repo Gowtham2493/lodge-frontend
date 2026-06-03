@@ -1,0 +1,314 @@
+:host {
+  display: block;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --header-height: 64px;
+}
+
+.nr-header {
+  width: 100%;
+  height: var(--header-height);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+  &--sticky {
+    position: sticky;
+    top: 0;
+  }
+
+  /* Variants */
+  &--light {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #0f172a;
+    border-bottom: 1px solid #e2e8f0;
+
+    .nr-header__nav-link { color: #475569; }
+    .nr-header__nav-link:hover { color: #0f172a; }
+  }
+
+  &--dark {
+    background-color: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #f8fafc;
+    border-bottom: 1px solid #1e293b;
+
+    .nr-header__nav-link { color: #cbd5e1; }
+    .nr-header__nav-link:hover { color: #ffffff; }
+    .nr-header__search input { 
+      background-color: #1e293b; 
+      color: white; 
+      border-color: #334155;
+    }
+  }
+
+  &--primary {
+    background-color: rgba(59, 130, 246, 0.95);
+    backdrop-filter: blur(12px);
+    color: #ffffff;
+    border-bottom: none;
+
+    .nr-header__nav-link { color: #bfdbfe; }
+    .nr-header__nav-link:hover { color: #ffffff; }
+    .nr-header__search input {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      &::placeholder { color: rgba(255, 255, 255, 0.7); }
+    }
+  }
+
+  &--transparent {
+    background-color: transparent;
+    border-bottom: 1px solid transparent;
+    color: inherit;
+  }
+
+  /* Container */
+  &__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+  }
+
+  /* Brand */
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+
+    .nr-header__logo {
+      height: 32px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .nr-header__title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+  }
+
+  /* Navigation */
+  &__nav {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    margin: 0 2rem;
+
+    &-list {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    &-item {
+      display: flex;
+      align-items: center;
+    }
+
+    &-link {
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: currentColor;
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 2px;
+      }
+
+      &:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+    }
+  }
+
+  /* Actions Container */
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  /* Search */
+  &__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      opacity: 0.5;
+    }
+
+    input {
+      padding: 0.5rem 1rem 0.5rem 2.25rem;
+      border-radius: 9999px;
+      border: 1px solid #cbd5e1;
+      background-color: #f8fafc;
+      font-size: 0.875rem;
+      font-family: inherit;
+      width: 200px;
+      transition: all 0.2s ease;
+      outline: none;
+
+      &:focus {
+        width: 240px;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        border-color: #3b82f6;
+        background-color: #ffffff;
+      }
+    }
+  }
+
+  &__custom-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* Profile Wrapper */
+  &__profile-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Profile Dropdown Menu */
+  &__profile-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 200px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    z-index: 100;
+    
+    .nr-header--dark & {
+      background: #1e293b;
+      border-color: #334155;
+    }
+
+    &-list {
+      list-style: none;
+      margin: 0;
+      padding: 0.5rem 0;
+    }
+
+    &-item {
+      a {
+        display: block;
+        padding: 0.75rem 1rem;
+        color: #475569;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: background-color 0.2s ease, color 0.2s ease;
+
+        &:hover {
+          background-color: #f1f5f9;
+          color: #0f172a;
+        }
+
+        .nr-header--dark & {
+          color: #cbd5e1;
+          &:hover {
+            background-color: #334155;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  /* Profile Button */
+  &__profile {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: none;
+    padding: 0.25rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    outline: none;
+    color: inherit;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .nr-header--dark &:hover, .nr-header--primary &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 2px #3b82f6;
+    }
+
+    .profile-img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-placeholder {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .profile-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding-right: 0.5rem;
+      display: none;
+      
+      @media (min-width: 768px) {
+        display: block;
+      }
+    }
+  }
+}
+
+/* Responsive Hide for Nav items on small screens */
+@media (max-width: 1024px) {
+  .nr-header__nav {
+    display: none;
+  }
+}

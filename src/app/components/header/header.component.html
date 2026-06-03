@@ -1,0 +1,62 @@
+<header 
+  class="nr-header" 
+  [ngClass]="['nr-header--' + variant(), isSticky() ? 'nr-header--sticky' : '']"
+>
+  <div class="nr-header__container">
+    
+    <!-- Left Section: Brand -->
+    <div class="nr-header__brand">
+      <img *ngIf="logoSrc()" [src]="logoSrc()" alt="Logo" class="nr-header__logo" />
+      <span *ngIf="title()" class="nr-header__title">{{ title() }}</span>
+    </div>
+
+    <!-- Center Section: Navigation -->
+    <nav *ngIf="navItems().length > 0" class="nr-header__nav">
+      <ul class="nr-header__nav-list">
+        <li *ngFor="let item of navItems()" class="nr-header__nav-item">
+          <a a href="#" (click)="onNavClick(item, $event)" class="nr-header__nav-link">
+            {{ item.label }}
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Right Section: Actions & Profile -->
+    <div class="nr-header__actions">
+      
+      <!-- Search Bar -->
+      <form *ngIf="showSearch()" class="nr-header__search" (submit)="onSearch($event)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search..." aria-label="Search" />
+      </form>
+
+      <!-- Custom Actions Projection -->
+      <div class="nr-header__custom-actions">
+        <ng-content select="[custom-actions]"></ng-content>
+      </div>
+
+      <!-- User Profile -->
+      <div class="nr-header__profile-wrapper" *ngIf="showProfile()">
+        <button class="nr-header__profile" (click)="toggleProfileMenu($event); profileClicked.emit()" aria-label="User Profile">
+          <img *ngIf="profileImageUrl()" [src]="profileImageUrl()" [alt]="profileName() || 'Profile'" class="profile-img" />
+          <div *ngIf="!profileImageUrl()" class="profile-placeholder">
+            {{ profileName() ? profileName()!.charAt(0).toUpperCase() : 'U' }}
+          </div>
+          <span *ngIf="profileName()" class="profile-name">{{ profileName() }}</span>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div class="nr-header__profile-menu" *ngIf="isProfileMenuOpen() && profileMenuItems().length > 0">
+          <ul class="nr-header__profile-menu-list">
+            <li *ngFor="let item of profileMenuItems()" class="nr-header__profile-menu-item">
+              <a href="#" (click)="onProfileMenuItemClick(item, $event)">
+                {{ item.label }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</header>
