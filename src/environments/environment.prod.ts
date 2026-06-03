@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-backend.onrender.com/api'
+  apiUrl: 'https://lodge-backend-0xd4.onrender.com/api'
 };
