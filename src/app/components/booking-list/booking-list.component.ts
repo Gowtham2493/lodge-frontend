@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { NotificationService } from '../../services/notification.service';
 import { Booking } from '../../models/booking.model';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-booking-list',
@@ -13,11 +14,13 @@ import { Booking } from '../../models/booking.model';
   templateUrl: './booking-list.component.html',
   styleUrl: './booking-list.component.scss'
 })
-export class BookingListComponent implements OnInit {
+export class BookingListComponent implements OnInit, OnDestroy {
   bookings: Booking[] = [];
   filteredBookings: Booking[] = [];
   filter = 'ALL';
   checkingOut: number | null = null;
+  loading: boolean = false;
+  private routerSubscription?: Subscription;
 
   get totalAmount(): number {
     return this.filteredBookings.reduce((sum, b) => sum + (b.amount || 0), 0);
@@ -31,18 +34,36 @@ export class BookingListComponent implements OnInit {
     return this.totalAmount - this.totalPaid;
   }
 
-  constructor(private bookingService: BookingService, private notificationService: NotificationService, private router: Router) {}
+  constructor(
+    private bookingService: BookingService,
+    private notificationService: NotificationService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.loadBookings();
+    this.loadBookings(true);
+
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        if (event.url === '/bookings' || event.urlAfterRedirects === '/bookings') {
+          this.loadBookings(true);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSubscription?.unsubscribe();
   }
 
   applyFilter(): void {
     if (this.filter === 'ALL') {
-      this.filteredBookings = this.bookings;
+      this.filteredBookings = [...this.bookings];
     } else {
       this.filteredBookings = this.bookings.filter(b => b.status === this.filter);
     }
+    this.cdr.detectChanges();
   }
 
   editBooking(booking: Booking): void {
@@ -55,7 +76,7 @@ export class BookingListComponent implements OnInit {
       this.bookingService.checkout(booking.bookingId).subscribe({
         next: () => {
           this.notificationService.success(`Room ${booking.roomNumber} checked out successfully`);
-          this.loadBookings();
+          this.loadBookings(true);
           this.checkingOut = null;
         },
         error: (err) => {
@@ -66,13 +87,25 @@ export class BookingListComponent implements OnInit {
     }
   }
 
-  private loadBookings(): void {
-    this.bookingService.getAllBookings().subscribe({
+  private loadBookings(forceRefresh: boolean = false): void {
+    this.loading = true;
+    this.cdr.detectChanges();
+
+    this.bookingService.getAllBookings(forceRefresh).subscribe({
       next: (bookings) => {
-        this.bookings = bookings;
+        console.log('Bookings received in component:', bookings);
+        this.bookings = Array.isArray(bookings) ? bookings : [];
         this.applyFilter();
+        this.loading = false;
+        this.cdr.detectChanges();
       },
-      error: () => {}
+      error: (err) => {
+        console.error('Error loading bookings:', err);
+        this.loading = false;
+        this.bookings = [];
+        this.filteredBookings = [];
+        this.cdr.detectChanges();
+      }
     });
   }
 }

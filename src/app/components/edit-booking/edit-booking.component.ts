@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { RoomService } from '../../services/room.service';
 import { NotificationService } from '../../services/notification.service';
 import { Room } from '../../models/room.model';
 import { Booking } from '../../models/booking.model';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-edit-booking',
@@ -15,7 +16,7 @@ import { Booking } from '../../models/booking.model';
   templateUrl: './edit-booking.component.html',
   styleUrl: './edit-booking.component.scss'
 })
-export class EditBookingComponent implements OnInit {
+export class EditBookingComponent implements OnInit, OnDestroy {
   bookingId!: number;
   booking: Booking | null = null;
   editForm: FormGroup;
@@ -23,6 +24,7 @@ export class EditBookingComponent implements OnInit {
   loading = true;
   submitting = false;
   errorMessage = '';
+  private routerSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -46,6 +48,20 @@ export class EditBookingComponent implements OnInit {
   ngOnInit(): void {
     this.bookingId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadBooking();
+
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        const newId = Number(this.route.snapshot.paramMap.get('id'));
+        if (newId && newId !== this.bookingId) {
+          this.bookingId = newId;
+          this.loadBooking();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSubscription?.unsubscribe();
   }
 
   onSave(): void {

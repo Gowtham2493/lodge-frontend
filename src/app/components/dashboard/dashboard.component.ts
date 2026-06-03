@@ -1,7 +1,10 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, NavigationEnd } from '@angular/router';
 import { RoomService } from '../../services/room.service';
 import { Room } from '../../models/room.model';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +16,7 @@ import { Room } from '../../models/room.model';
 export class DashboardComponent implements OnInit, OnDestroy {
   rooms: Room[] = [];
   private refreshInterval: any;
+  private routerSubscription?: Subscription;
 
   // Stats
   totalRooms: number = 0;
@@ -27,18 +31,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private roomService: RoomService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.loadRooms();
     this.refreshInterval = setInterval(() => this.loadRooms(), 30000);
+
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        if (event.url === '/dashboard' || event.urlAfterRedirects === '/dashboard') {
+          this.loadRooms();
+        }
+      });
   }
 
   ngOnDestroy(): void {
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
     }
+    this.routerSubscription?.unsubscribe();
   }
 
   private loadRooms(): void {
@@ -111,5 +125,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${month}/${day}`;
+  }
+
+  navigateToNewBooking(): void {
+    this.router.navigate(['/bookings/new']);
   }
 }

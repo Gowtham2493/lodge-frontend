@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, NavigationEnd } from '@angular/router';
 import { EmployeeService } from '../../services/employee.service';
 import { NotificationService } from '../../services/notification.service';
+import { filter, Subscription } from 'rxjs';
 
 interface Employee {
   employeeId: number;
@@ -17,15 +19,19 @@ interface Employee {
   templateUrl: './employee-management.component.html',
   styleUrl: './employee-management.component.scss'
 })
-export class EmployeeManagementComponent implements OnInit {
+export class EmployeeManagementComponent implements OnInit, OnDestroy {
   employees: Employee[] = [];
   employeeForm: FormGroup;
   editingEmployee: Employee | null = null;
+  loading: boolean = false;
+  private routerSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
     this.employeeForm = this.fb.group({
       username: ['', Validators.required],
@@ -36,6 +42,18 @@ export class EmployeeManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadEmployees();
+
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        if (event.url === '/employees' || event.urlAfterRedirects === '/employees') {
+          this.loadEmployees();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSubscription?.unsubscribe();
   }
 
   onSave(): void {
@@ -97,8 +115,18 @@ export class EmployeeManagementComponent implements OnInit {
   }
 
   private loadEmployees(): void {
+    this.loading = true;
     this.employeeService.getAllEmployees().subscribe({
-      next: (employees) => this.employees = employees
+      next: (employees) => {
+        this.employees = employees;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading employees:', err);
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 }

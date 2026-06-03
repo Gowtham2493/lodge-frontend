@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, NavigationEnd } from '@angular/router';
 import { RoomService } from '../../services/room.service';
 import { NotificationService } from '../../services/notification.service';
 import { Room } from '../../models/room.model';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-room-management',
@@ -12,15 +14,19 @@ import { Room } from '../../models/room.model';
   templateUrl: './room-management.component.html',
   styleUrl: './room-management.component.scss'
 })
-export class RoomManagementComponent implements OnInit {
+export class RoomManagementComponent implements OnInit, OnDestroy {
   rooms: Room[] = [];
   roomForm: FormGroup;
   editingRoom: Room | null = null;
+  loading: boolean = false;
+  private routerSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private roomService: RoomService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
     this.roomForm = this.fb.group({
       roomNumber: ['', Validators.required],
@@ -31,6 +37,18 @@ export class RoomManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadRooms();
+
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        if (event.url === '/rooms' || event.urlAfterRedirects === '/rooms') {
+          this.loadRooms();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSubscription?.unsubscribe();
   }
 
   onSaveRoom(): void {
@@ -86,8 +104,18 @@ export class RoomManagementComponent implements OnInit {
   }
 
   private loadRooms(): void {
+    this.loading = true;
     this.roomService.getAllRooms().subscribe({
-      next: (rooms) => this.rooms = rooms
+      next: (rooms) => {
+        this.rooms = rooms;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading rooms:', err);
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 }

@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, NavigationEnd } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { BookingService } from '../../services/booking.service';
 import { RoomService } from '../../services/room.service';
 import { NotificationService } from '../../services/notification.service';
 import { Room } from '../../models/room.model';
 import { Customer } from '../../models/customer.model';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-new-booking',
@@ -15,7 +17,7 @@ import { Customer } from '../../models/customer.model';
   templateUrl: './new-booking.component.html',
   styleUrl: './new-booking.component.scss'
 })
-export class NewBookingComponent implements OnInit {
+export class NewBookingComponent implements OnInit, OnDestroy {
   customerForm: FormGroup;
   bookingForm: FormGroup;
   availableRooms: Room[] = [];
@@ -23,13 +25,15 @@ export class NewBookingComponent implements OnInit {
   submitting = false;
   errorMessage = '';
   existingCustomer: Customer | null = null;
+  private routerSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private customerService: CustomerService,
     private bookingService: BookingService,
     private roomService: RoomService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) {
     this.customerForm = this.fb.group({
       name: ['', Validators.required],
@@ -55,6 +59,18 @@ export class NewBookingComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAvailableRooms();
+
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        if (event.url === '/bookings/new' || event.urlAfterRedirects === '/bookings/new') {
+          this.loadAvailableRooms();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSubscription?.unsubscribe();
   }
 
   onPhoneLookup(): void {
